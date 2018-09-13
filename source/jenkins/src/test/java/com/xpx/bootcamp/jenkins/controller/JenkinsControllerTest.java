@@ -26,35 +26,6 @@ public class JenkinsControllerTest {
 	@InjectMocks
 	private JenkinsController testee;
 	
-	@Test
-	public void testBuild() {
-		//given
-		JenkinsDto dto = new JenkinsDto();
-		when(jenkinsService.startBuild()).thenReturn(dto);
-		
-		//when
-		JenkinsDto output = testee.build(true);
-		
-		//then
-		assertThat(output, is(dto));
-		
-		
-	}
-
-	@Test
-	public void testBuild_falseReturn() {
-		//given
-		JenkinsDto dto = new JenkinsDto();
-		when(jenkinsService.startBuild()).thenReturn(dto);
-		
-		//when
-		JenkinsDto output = testee.build(false);
-		
-		//then
-		assertThat(output, nullValue());
-		
-		
-	}
 	
 	@Test
 	public void testBuildParam() {
@@ -62,18 +33,55 @@ public class JenkinsControllerTest {
 		String param = "bob";
 		BuildDto buildDto = new BuildDto();
 		buildDto.setParam(param);
+		String jobName = "jobName";
 		
 		JenkinsDto dto = new JenkinsDto();
-		when(jenkinsService.startParamBuild(param)).thenReturn(dto);
+		when(jenkinsService.startParamBuild(param, jobName)).thenReturn(dto);
 		
 		//when
-		JenkinsDto output = testee.buildParam(true, buildDto);
+		JenkinsDto output = testee.buildParam(true, buildDto, jobName);
+		
+		//then
+		assertThat(output, is(dto));
+		
+	}
+	
+	@Test
+	public void testBuildParam_nullDto() {
+		//given
+		String jobName = "jobName";
+		
+		JenkinsDto dto = new JenkinsDto();
+		when(jenkinsService.startBuild(jobName)).thenReturn(dto);
+		
+		//when
+		JenkinsDto output = testee.buildParam(true, null, jobName);
 		
 		//then
 		assertThat(output, is(dto));
 		
 	}
 
+	@Test
+	public void testBuildParam_returnFalse() {
+		//given
+		String param = "bob";
+		BuildDto buildDto = new BuildDto();
+		buildDto.setParam(param);
+		String jobName = "jobName";
+		
+		JenkinsDto dto = new JenkinsDto();
+		when(jenkinsService.startParamBuild(param, jobName)).thenReturn(dto);
+		
+		//when
+		JenkinsDto output = testee.buildParam(false, buildDto, jobName);
+		
+		//then
+		assertThat(output, nullValue());
+		
+	}
+	
+	
 	@Test
 	public void testGetSimpleJob() {
 		//given

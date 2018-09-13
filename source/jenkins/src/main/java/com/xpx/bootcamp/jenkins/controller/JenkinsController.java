@@ -29,18 +29,6 @@ public class JenkinsController {
 	/** The Logger. */
 	private static final Logger LOG  = LoggerFactory.getLogger(JenkinsController.class);
 	
-	/**
-	 * Calls the Jenkins build to do a simple request. The user can indicate if they want a response or not. 
-	 *
-	 * @param returnResponse true if the user wants a response otherwise false. 
-	 * @return the jenkins dto if requested with response info. 
-	 * 
-	 */
-	@RequestMapping(value="/build/simple", method=RequestMethod.GET)
-	public JenkinsDto build(@RequestParam(value="response", required=false, defaultValue="true") Boolean returnResponse) {
-		return returnIfWanted(returnResponse,jenkinsService.startBuild());
-
-	}
 
 	/**
 	 * Call Jenkins to do a build with a a parameter.  
@@ -49,11 +37,17 @@ public class JenkinsController {
 	 * @param dto the input from the request
 	 * @return the dto with info about the build
 	 */
-	@RequestMapping(value="/build/param", method=RequestMethod.POST)
-	public JenkinsDto buildParam(@RequestParam(value="response", required=false, defaultValue="true") Boolean returnResponse,
-			@RequestBody BuildDto dto) {
-			LOG.info("Param is {}", dto.getParam());
-			return returnIfWanted(returnResponse, jenkinsService.startParamBuild(dto.getParam()));
+	@RequestMapping(value="/build/{jobName}", method=RequestMethod.POST)
+	public JenkinsDto buildParam(
+			@RequestParam(value="response", required=false, defaultValue="true") Boolean returnResponse,
+			@RequestBody(required=false) BuildDto dto,
+			@PathVariable("jobName") String job) {
+			
+			if(dto == null) {
+				return returnIfWanted(returnResponse, jenkinsService.startBuild(job));
+			} 
+			
+			return returnIfWanted(returnResponse, jenkinsService.startParamBuild(dto.getParam(), job));
 	}
 
 	/**

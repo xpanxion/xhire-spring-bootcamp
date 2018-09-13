@@ -28,10 +28,10 @@ public class JenkinsService {
 	 *
 	 * @return the jenkins dto with info about the build. 
 	 */
-	public JenkinsDto startBuild() {
+	public JenkinsDto startBuild(String jobName) {
 		JenkinsDto retval = new JenkinsDto();
 		
-		retval.setSuccess(restClient.runSimpleBuild());
+		retval.setSuccess(restClient.runSimpleBuild(jobName));
 		return retval;
 	}
 	
@@ -41,10 +41,10 @@ public class JenkinsService {
 	 * @param param the param
 	 * @return the jenkins dto with info about the build.
 	 */
-	public JenkinsDto startParamBuild(String param) {
+	public JenkinsDto startParamBuild(String param, String jobName) {
 		JenkinsDto retval = new JenkinsDto();
 		
-		retval.setSuccess(restClient.runParamBuild(param));
+		retval.setSuccess(restClient.runParamBuild(param, jobName));
 		retval.setValue(param);
 		
 		return retval;

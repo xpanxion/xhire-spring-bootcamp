@@ -26,11 +26,14 @@ public class RestTemplateConfig {
 	 * @return the rest template to use to access the jenkins server. 
 	 */
 	@Bean
-	public RestTemplate jenkinsRestTemplate() {
-		RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+	public RestTemplate jenkinsRestTemplate(RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder.basicAuthorization(user, password).build();
 
-		
+	}
+
+	@Bean
+	public RestTemplateBuilder restTemplatebuilder() {
+		return new RestTemplateBuilder();
 	}
 	
 }
