@@ -46,12 +46,8 @@ public class JenkinsRestClient {
 	private ObjectMapper objectMapper;
 	
 	/** The url of the jenkins server for a simple build. */
-	@Value("${jenkins.simplebuild.url}")
-	private String simpleUrl;
-	
-	/** The url of the jenkins server for a simple build. */
-	@Value("${jenkins.parambuild.url}")
-	private String paramUrl;
+	@Value("${jenkins.build.url}")
+	private String buildUrl;
 	
 	/** The job url. */
 	@Value("${jenkins.job.url}")
@@ -65,8 +61,8 @@ public class JenkinsRestClient {
 	 *
 	 * @return true, if successful
 	 */
-	public boolean runSimpleBuild() {
-		ResponseEntity<Object> response = template.postForEntity(simpleUrl, null, null);
+	public boolean runSimpleBuild(String jobName) {
+		ResponseEntity<Object> response = template.postForEntity(String.format(buildUrl, jobName), null, null);
 		return HttpStatus.CREATED.equals(response.getStatusCode());
 	}
 	
@@ -76,7 +72,7 @@ public class JenkinsRestClient {
 	 * @param param the parameter to use
 	 * @return true, if successful
 	 */
-	public boolean runParamBuild(String param) {
+	public boolean runParamBuild(String param, String jobName) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		
@@ -102,7 +98,7 @@ public class JenkinsRestClient {
 		
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 		
-		ResponseEntity<Object> response = template.postForEntity(paramUrl, request, null);
+		ResponseEntity<Object> response = template.postForEntity(String.format(buildUrl, jobName), request, null);
 		
 		return HttpStatus.CREATED.equals(response.getStatusCode());
 		
