@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,8 @@ import com.xpx.bootcamp.jenkins.entity.Parameters;
  * Allows access to a jenkins server via rest service. 
  */
 @Repository
-public class JenkinsRestClient {
+@Profile("RestTemplate")
+public class RestTemplateJenkinsRestClient implements IJenkinsRestClient {
 
 	/** The Constant API_JSON. */
 	private static final String API_JSON = "/api/json";
@@ -58,7 +60,7 @@ public class JenkinsRestClient {
 	private String jobUrl;
 	
 	/** LOGGER. */
-	private static final Logger LOG = LoggerFactory.getLogger(JenkinsRestClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RestTemplateJenkinsRestClient.class);
 	
 	/**
 	 * Runs a simple build on the jenkins server and returns true if the expected status code is returned. 

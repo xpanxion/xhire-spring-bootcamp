@@ -84,7 +84,7 @@ public class JenkinsController {
 	 */
 	@RequestMapping(value="/job/param/{id}", method=RequestMethod.GET) 
 	public BuildDto getBuild(@PathVariable("id") Integer id) {
-		return jenkinsService.getbuild("Job2", id);
+		return jenkinsService.getBuild("Job2", id);
 		
 	}
 	

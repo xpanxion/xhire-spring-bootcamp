@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.xpx.bootcamp.jenkins.dao.JenkinsRestClient;
+import com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient;
 import com.xpx.bootcamp.jenkins.dto.BuildDto;
 import com.xpx.bootcamp.jenkins.dto.JenkinsDto;
 import com.xpx.bootcamp.jenkins.dto.JobDto;
@@ -21,7 +21,7 @@ public class JenkinsService {
 
 	/** The rest client to access jenknins with. */
 	@Autowired
-	JenkinsRestClient restClient;
+	IJenkinsRestClient restClient;
 	
 	/**
 	 * Starts a build on the jenkins server.
@@ -78,7 +78,7 @@ public class JenkinsService {
 	 * @param id the id
 	 * @return the build info
 	 */
-	public BuildDto getbuild(String jobName, Integer id) {
+	public BuildDto getBuild(String jobName, Integer id) {
 		Build build = restClient.getBuild(jobName, id);
 		
 		BuildDto dto = new BuildDto();
