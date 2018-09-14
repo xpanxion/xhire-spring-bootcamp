@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import com.xpx.bootcamp.jenkins.dao.JenkinsRestClient;
@@ -21,7 +23,11 @@ public class JenkinsService {
 
 	/** The rest client to access jenknins with. */
 	@Autowired
-	JenkinsRestClient restClient;
+	private JenkinsRestClient restClient;
+	
+	@Autowired
+	@Qualifier("jenkinsConverter")
+	private ConversionService converter;
 	
 	/**
 	 * Starts a build on the jenkins server.
@@ -81,11 +87,7 @@ public class JenkinsService {
 	public BuildDto getbuild(String jobName, Integer id) {
 		Build build = restClient.getBuild(jobName, id);
 		
-		BuildDto dto = new BuildDto();
-		dto.setNumber(build.getNumber());
-		//TODO:  Help this later on
-		dto.setParam(build.getActions().get(0).getParameters().get(0).getValue());
-		return dto;
+		return converter.convert(build, BuildDto.class);
 		
 	}
 	

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.convert.ConversionService;
 
 import com.xpx.bootcamp.jenkins.dao.JenkinsRestClient;
 import com.xpx.bootcamp.jenkins.dto.BuildDto;
@@ -32,6 +33,9 @@ public class JenkinsServiceTest extends JenkinsService {
 	
 	@InjectMocks
 	private JenkinsService testee;
+	
+	@Mock
+	private ConversionService converter;
 	
 	@Test
 	public void testStartBuild() {
@@ -116,14 +120,18 @@ public class JenkinsServiceTest extends JenkinsService {
 		//given
 		String name = "job";
 		Integer id = 4;
-		when(restClient.getBuild(name, id)).thenReturn(buildBuild(3));
+		Build build = buildBuild(3);
+		
+		when(restClient.getBuild(name, id)).thenReturn(build);
+		
+		BuildDto dto = new BuildDto();
+		when(converter.convert(build, BuildDto.class)).thenReturn(dto);
 		
 		//when
 		BuildDto output = testee.getbuild(name, id);
 		
 		//then
-		assertThat(output.getNumber(), is(3));
-		assertThat(output.getParam(), is("bob"));
+		assertThat(output, is(dto));
 	}
 	
 	

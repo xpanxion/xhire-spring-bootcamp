@@ -3,16 +3,20 @@ package com.xpx.bootcamp.jenkins.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xpx.bootcamp.jenkins.dto.BuildDto;
 import com.xpx.bootcamp.jenkins.dto.JenkinsDto;
 import com.xpx.bootcamp.jenkins.dto.JobDto;
+import com.xpx.bootcamp.jenkins.errors.JenkinsApplicationException;
 import com.xpx.bootcamp.jenkins.service.JenkinsService;
 
 /**
@@ -82,6 +86,12 @@ public class JenkinsController {
 		
 	}
 	
+	
+	@ExceptionHandler(value=JenkinsApplicationException.class)
+	@ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
+	public void handleApplicationException(Throwable e) {
+		LOG.error("error occured", e);
+	}
 	
 	/**
 	 * Returns the passed in object if the flag is true other wise null. 
