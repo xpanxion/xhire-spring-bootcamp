@@ -108,7 +108,7 @@ public class JenkinsControllerTest {
 		//given
 		BuildDto dto = new BuildDto();
 		Integer id = 433;
-		when(jenkinsService.getbuild("Job2",id)).thenReturn(dto);
+		when(jenkinsService.getBuild("Job2",id)).thenReturn(dto);
 		
 		//when
 		BuildDto output = testee.getBuild(id);
