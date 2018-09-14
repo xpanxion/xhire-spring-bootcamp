@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,6 +45,9 @@ public class JenkinsRestClientTest {
 	@InjectMocks
 	private JenkinsRestClient testee;
 
+	@Mock 
+	private ConversionService converter;
+	
 	@Before
 	public void setup() {
 		ReflectionTestUtils.setField(testee, "buildUrl", "simpleUrl");
@@ -84,7 +90,10 @@ public class JenkinsRestClientTest {
 	public void testRunParamBuild() throws JsonProcessingException {
 		//Given
 		String param = "bob";
-		when(mapper.writeValueAsString(Mockito.isA(Parameters.class))).thenReturn("json string");
+		Parameters parameters = new Parameters();
+		when(converter.convert(Mockito.isA(Map.class), Mockito.eq(Parameters.class))).thenReturn(parameters);
+		
+		when(mapper.writeValueAsString(parameters)).thenReturn("json string");
 
 		ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.CREATED);
 		when(template.postForEntity(Mockito.eq("simpleUrl"), Mockito.isA(HttpEntity.class), Mockito.eq(null))).thenReturn(response);
@@ -97,11 +106,11 @@ public class JenkinsRestClientTest {
 		//then
 		assertThat(output, is(true));
 		
-		ArgumentCaptor<Parameters> paramCaptor = ArgumentCaptor.forClass(Parameters.class);
-		verify(mapper).writeValueAsString(paramCaptor.capture());
+		ArgumentCaptor<Map<String,String>> paramCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(converter).convert(paramCaptor.capture(), Mockito.eq(Parameters.class));
 		
-		assertThat(paramCaptor.getValue().getParameter().get(0).getName(), is("whoIs"));
-		assertThat(paramCaptor.getValue().getParameter().get(0).getValue(), is(param));
+		assertThat(paramCaptor.getValue().get("whoIs"), is(param));
+
 		
 		ArgumentCaptor<HttpEntity<MultiValueMap<String, String>>> entityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 		verify(template).postForEntity(Mockito.eq("simpleUrl"), entityCaptor.capture(), Mockito.eq(null));
@@ -116,7 +125,10 @@ public class JenkinsRestClientTest {
 	public void testRunParamBuild_BadResult() throws JsonProcessingException {
 		//Given
 		String param = "bob";
-		when(mapper.writeValueAsString(Mockito.isA(Parameters.class))).thenReturn("json string");
+		Parameters parameters = new Parameters();
+		when(converter.convert(Mockito.isA(Map.class), Mockito.eq(Parameters.class))).thenReturn(parameters);
+		
+		when(mapper.writeValueAsString(parameters)).thenReturn("json string");
 
 		ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
 		when(template.postForEntity(Mockito.eq("simpleUrl"), Mockito.isA(HttpEntity.class), Mockito.eq(null))).thenReturn(response);
@@ -129,18 +141,17 @@ public class JenkinsRestClientTest {
 		//then
 		assertThat(output, is(false));
 		
-		ArgumentCaptor<Parameters> paramCaptor = ArgumentCaptor.forClass(Parameters.class);
-		verify(mapper).writeValueAsString(paramCaptor.capture());
+		ArgumentCaptor<Map<String,String>> paramCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(converter).convert(paramCaptor.capture(), Mockito.eq(Parameters.class));
 		
-		assertThat(paramCaptor.getValue().getParameter().get(0).getName(), is("whoIs"));
-		assertThat(paramCaptor.getValue().getParameter().get(0).getValue(), is(param));
+		assertThat(paramCaptor.getValue().get("whoIs"), is(param));
+
 		
 		ArgumentCaptor<HttpEntity<MultiValueMap<String, String>>> entityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 		verify(template).postForEntity(Mockito.eq("simpleUrl"), entityCaptor.capture(), Mockito.eq(null));
 		
 		assertThat(entityCaptor.getValue().getBody().get("json").get(0), is("json string"));
 		assertThat(entityCaptor.getValue().getHeaders().getContentType(), is(MediaType.APPLICATION_FORM_URLENCODED));
-		
 	
 	}
 	

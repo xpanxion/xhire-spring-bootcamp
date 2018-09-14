@@ -1,12 +1,17 @@
 package com.xpx.bootcamp.jenkins.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +28,7 @@ import com.xpx.bootcamp.jenkins.entity.Build;
 import com.xpx.bootcamp.jenkins.entity.Job;
 import com.xpx.bootcamp.jenkins.entity.Parameter;
 import com.xpx.bootcamp.jenkins.entity.Parameters;
+import com.xpx.bootcamp.jenkins.errors.JenkinsApplicationException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,6 +59,10 @@ public class JenkinsRestClient {
 	@Value("${jenkins.job.url}")
 	private String jobUrl;
 	
+	@Autowired
+	@Qualifier("jenkinsConverter")
+	private ConversionService converter;
+	
 	/** LOGGER. */
 	private static final Logger LOG = LoggerFactory.getLogger(JenkinsRestClient.class);
 	
@@ -76,24 +86,17 @@ public class JenkinsRestClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		
-		//TODO : Use converters to convert from DTO to Entity 
-		Parameters parameters = new Parameters();
-		Parameter parameter = new Parameter();
-		parameter.setName("whoIs");
-		parameter.setValue(param);
-		List<Parameter> parameterList = new ArrayList<>();
-		parameterList.add(parameter);
-		parameters.setParameter(parameterList);
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("whoIs", param);
+
+		Parameters parameters = converter.convert(paramMap, Parameters.class);
 		
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		
-		//TODO : Add Error Handling 
 		try {
 			map.add("json", objectMapper.writeValueAsString(parameters));
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JenkinsApplicationException("Problem with conerting to parameters", e);
 		}
 		
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
