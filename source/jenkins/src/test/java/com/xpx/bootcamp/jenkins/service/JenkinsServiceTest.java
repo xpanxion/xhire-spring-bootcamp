@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
 
-import com.xpx.bootcamp.jenkins.dao.JenkinsRestClient;
+import com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient;
 import com.xpx.bootcamp.jenkins.dto.BuildDto;
 import com.xpx.bootcamp.jenkins.dto.JenkinsDto;
 import com.xpx.bootcamp.jenkins.dto.JobDto;
@@ -29,7 +29,7 @@ import com.xpx.bootcamp.jenkins.entity.Parameter;
 public class JenkinsServiceTest extends JenkinsService {
 
 	@Mock
-	private JenkinsRestClient restClient;
+	private IJenkinsRestClient restClient;
 	
 	@InjectMocks
 	private JenkinsService testee;

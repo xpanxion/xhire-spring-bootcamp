@@ -61,7 +61,7 @@ public class JenkinsController {
 	 */
 	@RequestMapping(value="/job/simple", method=RequestMethod.GET)
 	public JobDto getSimpleJob() {
-		return jenkinsService.getJob("Job1");
+		return jenkinsService.getJob("job1");
 	}
 	
 	/**

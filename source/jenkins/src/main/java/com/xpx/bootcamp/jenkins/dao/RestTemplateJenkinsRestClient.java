@@ -1,16 +1,14 @@
 package com.xpx.bootcamp.jenkins.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +24,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xpx.bootcamp.jenkins.entity.Build;
 import com.xpx.bootcamp.jenkins.entity.Job;
-import com.xpx.bootcamp.jenkins.entity.Parameter;
 import com.xpx.bootcamp.jenkins.entity.Parameters;
 import com.xpx.bootcamp.jenkins.errors.JenkinsApplicationException;
 
@@ -35,7 +32,8 @@ import com.xpx.bootcamp.jenkins.errors.JenkinsApplicationException;
  * Allows access to a jenkins server via rest service. 
  */
 @Repository
-public class JenkinsRestClient {
+@Profile("RestTemplate")
+public class RestTemplateJenkinsRestClient implements IJenkinsRestClient {
 
 	/** The Constant API_JSON. */
 	private static final String API_JSON = "/api/json";
@@ -64,24 +62,21 @@ public class JenkinsRestClient {
 	private ConversionService converter;
 	
 	/** LOGGER. */
-	private static final Logger LOG = LoggerFactory.getLogger(JenkinsRestClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RestTemplateJenkinsRestClient.class);
 	
-	/**
-	 * Runs a simple build on the jenkins server and returns true if the expected status code is returned. 
-	 *
-	 * @return true, if successful
+	/* (non-Javadoc)
+	 * @see com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient#runSimpleBuild(java.lang.String)
 	 */
+	@Override
 	public boolean runSimpleBuild(String jobName) {
 		ResponseEntity<Object> response = template.postForEntity(String.format(buildUrl, jobName), null, null);
 		return HttpStatus.CREATED.equals(response.getStatusCode());
 	}
 	
-	/**
-	 * Runs a paramatarized build with the passed in value.
-	 *
-	 * @param param the parameter to use
-	 * @return true, if successful
+	/* (non-Javadoc)
+	 * @see com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient#runParamBuild(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public boolean runParamBuild(String param, String jobName) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -107,12 +102,10 @@ public class JenkinsRestClient {
 		
 	}
 	
-	/**
-	 * Gets information on a job based on the passed in job name. 
-	 *
-	 * @param jobName the name of the job to get info for
-	 * @return the job info
+	/* (non-Javadoc)
+	 * @see com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient#getJob(java.lang.String)
 	 */
+	@Override
 	public Job getJob(String jobName) {
 		
 		String url = jobUrl + jobName + API_JSON;
@@ -121,13 +114,10 @@ public class JenkinsRestClient {
 		
 	}
 	
-	/**
-	 * Gets the builds information based on the job name and build id
-	 *
-	 * @param jobName the job name 
-	 * @param id the id of the build to get the info 
-	 * @return build info
+	/* (non-Javadoc)
+	 * @see com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient#getBuild(java.lang.String, java.lang.Integer)
 	 */
+	@Override
 	public Build getBuild(String jobName, Integer id) {
 		String url = jobUrl + String.format(BUILD_URL_PATH_PART_FORMAT, jobName, id);
 		LOG.info(url);

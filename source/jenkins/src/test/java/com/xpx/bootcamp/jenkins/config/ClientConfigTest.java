@@ -16,10 +16,10 @@ import org.springframework.web.client.RestTemplate;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class RestTemplateConfigTest {
+public class ClientConfigTest {
 
 	@InjectMocks
-	private RestTemplateConfig testee;
+	private ClientConfig testee;
 	
 	@Mock
 	private RestTemplateBuilder builder;
