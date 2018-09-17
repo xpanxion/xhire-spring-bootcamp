@@ -34,7 +34,7 @@ import com.xpx.bootcamp.jenkins.entity.Job;
 import com.xpx.bootcamp.jenkins.entity.Parameters;
 
 @RunWith(MockitoJUnitRunner.class)
-public class JenkinsRestClientTest {
+public class RestTemplateJenkinsRestClientTest {
 	
 	@Mock
 	private RestTemplate template;
@@ -43,7 +43,7 @@ public class JenkinsRestClientTest {
 	private ObjectMapper mapper;
 	
 	@InjectMocks
-	private JenkinsRestClient testee;
+	private IJenkinsRestClient testee;
 
 	@Mock 
 	private ConversionService converter;

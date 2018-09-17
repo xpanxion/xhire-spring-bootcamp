@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
-import com.xpx.bootcamp.jenkins.dao.JenkinsRestClient;
+import com.xpx.bootcamp.jenkins.dao.IJenkinsRestClient;
 import com.xpx.bootcamp.jenkins.dto.BuildDto;
 import com.xpx.bootcamp.jenkins.dto.JenkinsDto;
 import com.xpx.bootcamp.jenkins.dto.JobDto;
@@ -23,7 +23,7 @@ public class JenkinsService {
 
 	/** The rest client to access jenknins with. */
 	@Autowired
-	private JenkinsRestClient restClient;
+	private IJenkinsRestClient restClient;
 	
 	@Autowired
 	@Qualifier("jenkinsConverter")
