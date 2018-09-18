@@ -1,13 +1,19 @@
 package com.xpx.project.cardb.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public class CustomerDto {
 
 	private long id;
 	
+	@NotNull
 	private String first;
 	
+	@NotNull
 	private String last;
 
+	@Pattern(regexp="[0-9]{3}-[0-9]{3}-[0-9]{4}")
 	private String phone;
 
 	public long getId() {

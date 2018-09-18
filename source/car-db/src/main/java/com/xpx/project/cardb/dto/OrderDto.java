@@ -2,14 +2,20 @@ package com.xpx.project.cardb.dto;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+
 public class OrderDto {
 
 	private long id;
 	
+	@NotNull
 	private CustomerDto customer;
 	
+	@NotNull
 	private CarDto car;
 	
+	@Past
 	private LocalDate date;
 
 	public long getId() {
