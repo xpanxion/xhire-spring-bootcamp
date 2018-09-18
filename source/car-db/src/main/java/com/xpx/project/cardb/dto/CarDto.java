@@ -1,13 +1,19 @@
 package com.xpx.project.cardb.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class CarDto {
 
 	private long id;
 	
+	@NotNull
 	private String make;
 	
+	@NotNull
 	private String model;
 	
+	@Min(1)
 	private Double price;
 
 	public long getId() {
