@@ -63,6 +63,18 @@ public class CustomerController {
 	public CustomerDto getCustomer(@Valid @RequestBody CustomerDto customerDto) {
 		return custService.addCustomer(customerDto);
 	}
+
+	/**
+	 * Update an existing customer.
+	 *
+	 * @param customerDto the customer updated
+	 * @return the updated customer
+	 */
+	@RequestMapping(value="/customers", method=RequestMethod.PUT)
+	public CustomerDto updateCustomer(@RequestBody CustomerDto customerDto) {
+		return custService.updateCustomer(customerDto);
+	}
+
 	
 	/**
 	 * Deletes a customer based on the id
@@ -74,6 +86,8 @@ public class CustomerController {
 	public CustomerDto deleteCustomer(@PathVariable("custId") Long id) {
 		return custService.deleteCustomer(id);
 	}
+	
+	
 	
 	
 }

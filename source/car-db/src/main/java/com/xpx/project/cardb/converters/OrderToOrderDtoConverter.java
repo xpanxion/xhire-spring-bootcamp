@@ -12,15 +12,24 @@ import com.xpx.project.cardb.dto.OrderDto;
 import com.xpx.project.cardb.entity.Order;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * Converters an order to an order dto
+ */
 @Component
 public class OrderToOrderDtoConverter implements Converter<Order, OrderDto> {
 
+	/** The car converter. */
 	@Autowired
 	private CarToCarDtoConverter carConverter;
 
+	/** The customer converter. */
 	@Autowired
 	private CustomerToCustomerDtoConverter customerConverter;
 	
+	/* (non-Javadoc)
+	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
+	 */
 	@Override
 	public OrderDto convert(Order source) {
 		OrderDto orderDto = new OrderDto();
