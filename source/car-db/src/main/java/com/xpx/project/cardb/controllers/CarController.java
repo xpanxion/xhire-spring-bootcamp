@@ -69,6 +69,18 @@ public class CarController {
 	}
 	
 	/**
+	 * Adds a car.
+	 *
+	 * @param input the car to add
+	 * @return the car that was added
+	 */
+	@RequestMapping(value="/cars", method=RequestMethod.PUT)
+	public CarDto updateCar(@RequestBody CarDto input) {
+		
+		return carService.updateCar(input);
+	}
+	
+	/**
 	 * Deletes a car based on passed in id.
 	 *
 	 * @param id of the car to delete
